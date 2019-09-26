@@ -1,0 +1,57 @@
+name: core-ldap-server
+base: core18
+version: '0.1'
+summary: An LDAP server snap to provide user management on Ubuntu Core systems
+description: |
+  An LDAP server snap to provide user management on Ubuntu Core systems to i.e
+  run a graphical desktop in multi-user mode.
+
+grade: stable
+confinement: strict
+
+apps:
+  slapacl:
+    command: slapacl
+  slapadd:
+    command: slapadd
+  slapauth:
+    command: slapauth
+  slapcat:
+    command: slapcat
+  slapd:
+    command: wrapper.sh
+    daemon: simple
+    environment:
+      LDAPCONF: $SNAP_DATA/ldap/ldap.conf
+      ROOTDIR: $SNAP_DATA
+    plugs:
+      - network
+      - network-bind
+  slapdn:
+    command: slapdn
+  slapindex:
+    command: slapindex
+  slappasswd:
+    command: slappasswd
+  slapschema:
+    command: slapschema
+  slaptest:
+    command: slaptest
+
+layout:
+  /etc/ldap:
+    bind: $SNAP_DATA/ldap
+  /usr/lib/x86_64-linux-gnu/sasl2:
+    bind: $SNAP/usr/lib/x86_64-linux-gnu/sasl2
+  /usr/lib/sasl2:
+    bind: $SNAP/usr/lib/sasl2
+
+parts:
+  slapd:
+    plugin: nil
+    override-build: |
+      snapcraftctl build
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      cp ../../../wrapper.sh $SNAPCRAFT_PART_INSTALL/bin/
+    stage-packages:
+      - slapd
