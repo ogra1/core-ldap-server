@@ -1,4 +1,4 @@
-name: core-ldap-server
+name: ldap-server
 base: core18
 version: '0.1'
 summary: An LDAP server snap to provide user management on Ubuntu Core systems
